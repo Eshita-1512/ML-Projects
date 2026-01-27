@@ -104,14 +104,18 @@ inq_last_6mths | Credit inquiries in last 6 months |
   "revol_util": 45.9,
   "inq_last_6mths": 1
 }
+```
+---
 
-##Sample Response
+###Sample Response
+```json
 {
   "default_probability": 0.27,
   "risk_score": 27,
   "risk_level": "Medium",
   "decision_recommendation": "Manual Review"
 }
+```
 
 ▶️ Run Locally
 Backend
