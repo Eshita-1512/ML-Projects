@@ -120,22 +120,6 @@ This guarantees **training–inference consistency**.
    - FastAPI returns a JSON response
    - Streamlit displays the result to the user
 
-
-## 📁 Project Structure
-CREDIT_RISK/
-│
-├── Backend.py # FastAPI backend (XGBoost inference)
-├── Frontend.py # Streamlit frontend
-├── pre_screening.pkl # Serialized preprocessing + XGBoost pipeline
-├── requirements.txt
-├── README.md
-│
-├── notebooks/
-│ ├── Credit_risk(LOGISTIC).ipynb
-│ ├── Credit_risk(RFC).ipynb
-│ ├── Credit_risk(XGBoost).ipynb
-│ └── Credit_risk(XGBoost)_Deployed.ipynb
-
 ---
 
 ## 🧩 Input Features
