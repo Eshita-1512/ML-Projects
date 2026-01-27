@@ -105,9 +105,9 @@ inq_last_6mths | Credit inquiries in last 6 months |
   "inq_last_6mths": 1
 }
 ```
----
 
-###Sample Response
+
+### Sample Response
 ```json
 {
   "default_probability": 0.27,
@@ -116,8 +116,9 @@ inq_last_6mths | Credit inquiries in last 6 months |
   "decision_recommendation": "Manual Review"
 }
 ```
+---
 
-▶️ Run Locally
+## ▶️ Run Locally
 Backend
 pip install -r requirements.txt
 uvicorn Backend:app --reload
@@ -128,7 +129,7 @@ streamlit run Frontend.py
 
 Access API docs at: http://127.0.0.1:8000/docs
 
-⚠️ Deployment Notes
+## ⚠️ Deployment Notes
 
 The deployed model is a single serialized pipeline (preprocessing + model)
 
@@ -138,7 +139,7 @@ NumPy outputs are converted to native Python types for JSON safety
 
 scikit-learn version consistency is required between training and deployment
 
-🔮 Future Improvements
+##  Future Improvements
 
 Deploy Logistic Regression and Random Forest as optional inference models
 
@@ -150,7 +151,7 @@ Add CI/CD and automated testing
 
 Add monitoring for data drift
 
-👩‍💻 Author
+## 👩‍💻 Author
 
 Eshita
 Machine Learning & API Development
