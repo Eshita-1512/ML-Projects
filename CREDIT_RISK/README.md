@@ -49,6 +49,67 @@ All models were trained on the same preprocessed dataset and evaluated using cla
 **XGBoost** achieved the best trade-off between recall and precision and was therefore selected for deployment.
 
 ---
+## 🏗️ Deployment Architecture
+
+The final deployed system follows a **client–server ML inference architecture**:
+
+### 🔹 Model Selection
+Three models were trained and evaluated:
+- Logistic Regression
+- Random Forest
+- XGBoost
+
+Based on evaluation metrics (ROC-AUC, precision–recall tradeoff), **XGBoost** was selected as the **deployment model**.
+
+---
+
+### 🔹 Model Packaging
+- The **entire preprocessing pipeline + XGBoost model** is packaged as a **single serialized object** (`pre_screening.pkl`)
+- This includes:
+  - Missing value imputation
+  - Feature scaling
+  - One-hot encoding for categorical variables
+  - Final trained XGBoost classifier
+
+This guarantees **training–inference consistency**.
+
+---
+
+### 🔹 Backend (FastAPI)
+- FastAPI exposes a REST endpoint: `POST /predict`
+- Responsibilities:
+  - Validate incoming requests using Pydantic
+  - Convert input JSON → Pandas DataFrame
+  - Pass data through the serialized ML pipeline
+  - Post-process predictions into business-friendly outputs
+
+**Returned outputs:**
+- Default probability
+- Risk score (0–100)
+- Risk level (Low / Medium / High)
+- Decision recommendation (Approve / Manual Review / Reject)
+
+---
+
+### 🔹 Frontend (Streamlit)
+- Streamlit provides a simple UI for:
+  - Manual input of loan applicant details
+  - Triggering predictions via the FastAPI endpoint
+  - Displaying prediction results in real time
+- Acts as a client consuming the deployed ML API
+
+---
+
+### 🔹 Data Flow
+User (Streamlit UI)
+↓
+FastAPI (/predict endpoint)
+↓
+Serialized ML Pipeline
+↓
+Prediction + Risk Scoring
+↓
+JSON Response → UI
 
 ## 📁 Project Structure
 CREDIT_RISK/
@@ -59,6 +120,7 @@ CREDIT_RISK/
 │ ├── Credit_risk(LOGISTIC).ipynb
 │ ├── Credit_risk(RFC).ipynb
 │ └── Credit_risk(XGBoost).ipynb
+│ └── Credit_risk(XGBoost)_Deployed.ipynb
 ├── requirements.txt
 └── README.md
 
