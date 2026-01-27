@@ -1,177 +1,152 @@
-# Credit Risk Prediction using Machine Learning
+# Credit Risk Prediction — End-to-End ML Project
 
-## 📌 Project Overview
+This project implements an **end-to-end credit risk prediction system** using multiple machine learning models:
+- Logistic Regression
+- Random Forest Classifier
+- XGBoost Classifier
 
-This project focuses on **credit risk prediction**, where the goal is to predict whether a loan applicant is likely to **default or not** (`loan_status`).
-
-I implemented and compared **three machine learning models**:
-
-* **Logistic Regression** (baseline, interpretable model)
-* **Random Forest Classifier** (bagging-based ensemble)
-* **XGBoost Classifier** (gradient boosting, final best model)
-
-The project emphasizes **proper evaluation, generalization, and metric-driven decision making**, rather than blindly increasing model complexity.
+The best-performing model (**XGBoost**) is deployed as a **production-ready FastAPI REST API** with a **Streamlit frontend** for interactive predictions.
 
 ---
 
-## 🎯 Problem Statement
-
-Given historical loan applicant data (income, credit score, debt ratio, loan details, etc.), predict the probability of loan default.
-
-This is a **binary classification problem** commonly encountered in:
-
-* Banking
-* Lending platforms
-* Risk analytics
-
----
-
-## 🗂️ Dataset
-
-The dataset contains LendingClub-style loan information, including:
-https://www.kaggle.com/datasets/wordsforthewise/lending-club
-
-### Numerical Features
-
-* `loan_amnt`
-* `int_rate`
-* `installment`
-* `fico_range_low`
-* `annual_inc`
-* `dti`
-* `revol_util`
-* `open_acc`, `total_acc`
-* `delinq_2yrs`, `inq_last_6mths`
-
-### Categorical Features
-
-* `term`
-* `grade`
-* `sub_grade`
-* `emp_length`
-* `purpose`
-
-### Target Variable
-
-* `loan_status` (0 = Non-default, 1 = Default)
-
-The dataset is **well-balanced (~52% / 48%)**, making ROC-AUC a suitable evaluation metric.
+## 🚀 Project Highlights
+- Multiple ML models trained and evaluated
+- End-to-end preprocessing using `ColumnTransformer`
+- Robust handling of missing values and categorical variables
+- Model comparison and selection based on performance
+- Production-ready deployment using FastAPI
+- Interactive frontend using Streamlit
+- Safe JSON serialization and version-consistent deployment
 
 ---
 
-## 🛠️ Preprocessing Pipeline
-
-A robust preprocessing pipeline was built using **scikit-learn**:
-
-* **Missing value handling** using `SimpleImputer`
-* **Categorical encoding** using `OneHotEncoder`
-* **Column-wise transformations** using `ColumnTransformer`
-
-> Note: Feature scaling was intentionally avoided for tree-based models (Random Forest & XGBoost), as it does not impact split-based learning.
-
----
-
-## 🤖 Models Implemented
+## 🧠 Models Used
 
 ### 1️⃣ Logistic Regression
-
-* Used as a **baseline model**
-* Provides interpretability and serves as a benchmark
-* Helps identify whether non-linear models truly add value
+- Baseline interpretable model
+- Useful for understanding feature influence
+- Helps benchmark performance against complex models
 
 ### 2️⃣ Random Forest Classifier
-
-* Ensemble of decision trees trained using **bootstrap sampling**
-* Reduces variance compared to a single decision tree
-* Captures non-linear relationships
+- Ensemble-based tree model
+- Captures non-linear relationships
+- Provides feature importance insights
 
 ### 3️⃣ XGBoost Classifier (Final Model)
-
-* Gradient Boosted Decision Trees
-* Strong generalization performance
-* Handles non-linearities and feature interactions efficiently
-* Regularization used to avoid overfitting
+- Gradient boosting model with superior performance
+- Handles complex feature interactions effectively
+- Selected for deployment due to best overall metrics
 
 ---
 
-## 📊 Evaluation Strategy
+## 📊 Model Training & Selection
+All models were trained on the same preprocessed dataset and evaluated using classification metrics such as:
+- Accuracy
+- Precision
+- Recall
+- ROC-AUC
 
-The models were evaluated using **unseen test data**.
-
-### Metrics Used
-
-* **ROC-AUC (Primary Metric)** → measures ranking quality
-* Accuracy (secondary)
-* Classification Report (Precision, Recall, F1-score)
-
-### Key Checks
-
-* Train vs Test performance comparison
-* Baseline accuracy comparison
-* Overfitting / underfitting analysis
+**XGBoost** achieved the best trade-off between recall and precision and was therefore selected for deployment.
 
 ---
 
-## 📈 Results Summary
+## 📁 Project Structure
+CREDIT_RISK/
+├── Backend.py # FastAPI backend (XGBoost model)
+├── Frontend.py # Streamlit frontend
+├── pre_screening.pkl # Serialized preprocessing + XGBoost pipeline
+├── notebooks/
+│ ├── Credit_risk(LOGISTIC).ipynb
+│ ├── Credit_risk(RFC).ipynb
+│ └── Credit_risk(XGBoost).ipynb
+├── requirements.txt
+└── README.md
 
-| Model               | ROC-AUC  | Notes                                        |
-| ------------------- | -------- | -------------------------------------------- |
-| Logistic Regression | Baseline | Interpretable, lower performance             |
-| Random Forest       | Improved | Captures non-linearity                       |
-| XGBoost             | **Best** | Strong generalization, stable train-test gap |
-
-> Additional manual feature engineering was tested but **reverted after observing a drop in ROC-AUC**, prioritizing empirical validation over assumptions.
-
----
-
-## 🧠 Key Learnings
-
-* Strong models like **XGBoost often outperform heavy manual feature engineering** on well-designed tabular data
-* **ROC-AUC is more reliable than accuracy** for credit risk problems
-* Feature removal and hyperparameter tuning can be more effective than feature addition
-* Metric-driven decisions are critical in real-world ML
 
 ---
 
-## 🚀 How to Run
+## 🧩 Input Features
+| Feature | Description |
+|------|------------|
+loan_amnt | Loan amount |
+term | Loan term (36 or 60 months) |
+int_rate | Interest rate |
+fico_range_low | FICO score |
+annual_inc | Annual income |
+dti | Debt-to-income ratio |
+emp_length | Employment length |
+purpose | Loan purpose |
+open_acc | Open credit lines |
+total_acc | Total credit lines |
+revol_util | Revolving utilization |
+inq_last_6mths | Credit inquiries in last 6 months |
 
-```bash
-# Install dependencies
+---
+
+## 🔌 API Usage
+
+### Endpoint
+**POST** `/predict`
+
+### Sample Request
+```json
+{
+  "loan_amnt": 250000,
+  "term": "36 months",
+  "int_rate": 13.5,
+  "fico_range_low": 680,
+  "annual_inc": 80000,
+  "dti": 18.2,
+  "emp_length": "5 years",
+  "purpose": "debt_consolidation",
+  "open_acc": 6,
+  "total_acc": 18,
+  "revol_util": 45.9,
+  "inq_last_6mths": 1
+}
+
+##Sample Response
+{
+  "default_probability": 0.27,
+  "risk_score": 27,
+  "risk_level": "Medium",
+  "decision_recommendation": "Manual Review"
+}
+
+▶️ Run Locally
+Backend
 pip install -r requirements.txt
+uvicorn Backend:app --reload
 
-# Run notebooks
-jupyter notebook
-```
+Frontend
+streamlit run Frontend.py
 
-Each model is implemented in a separate notebook for clarity.
 
----
+Access API docs at: http://127.0.0.1:8000/docs
 
-## 📦 Tech Stack
+⚠️ Deployment Notes
 
-* Python
-* NumPy, Pandas
-* scikit-learn
-* XGBoost
-* Jupyter Notebook
+The deployed model is a single serialized pipeline (preprocessing + model)
 
----
+OneHotEncoder(handle_unknown="ignore") prevents inference crashes
 
-## 📌 Future Improvements
+NumPy outputs are converted to native Python types for JSON safety
 
-* Hyperparameter optimization using GridSearch / Optuna
-* SHAP-based feature importance analysis
-* Threshold tuning based on business cost
-* Model explainability for regulatory use cases
+scikit-learn version consistency is required between training and deployment
 
----
+🔮 Future Improvements
 
-## 👤 Author
+Deploy Logistic Regression and Random Forest as optional inference models
 
-**Eshita**
-Machine Learning Enthusiast | Credit Risk Modeling
+Add model comparison dashboard
 
----
+Dockerize full application
 
-⭐ If you find this project useful, feel free to star the repository!
+Add CI/CD and automated testing
 
+Add monitoring for data drift
+
+👩‍💻 Author
+
+Eshita
+Machine Learning & API Development
