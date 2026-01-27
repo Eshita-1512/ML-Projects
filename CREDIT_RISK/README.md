@@ -100,30 +100,41 @@ This guarantees **training–inference consistency**.
 
 ---
 
-### 🔹 Data Flow
-User (Streamlit UI)
-↓
-FastAPI (/predict endpoint)
-↓
-Serialized ML Pipeline
-↓
-Prediction + Risk Scoring
-↓
-JSON Response → UI
+## 🔄 Data Flow
+
+1. **User Input**
+   - User enters loan applicant details via the Streamlit UI
+
+2. **API Request**
+   - Streamlit sends a `POST` request to the FastAPI `/predict` endpoint
+
+3. **ML Inference**
+   - Input data is passed to the serialized preprocessing + XGBoost pipeline
+   - Features are transformed exactly as during training
+
+4. **Risk Evaluation**
+   - Model outputs default probability
+   - Risk score and risk category are computed
+
+5. **Response**
+   - FastAPI returns a JSON response
+   - Streamlit displays the result to the user
+
 
 ## 📁 Project Structure
 CREDIT_RISK/
-├── Backend.py # FastAPI backend (XGBoost model)
+│
+├── Backend.py # FastAPI backend (XGBoost inference)
 ├── Frontend.py # Streamlit frontend
 ├── pre_screening.pkl # Serialized preprocessing + XGBoost pipeline
+├── requirements.txt
+├── README.md
+│
 ├── notebooks/
 │ ├── Credit_risk(LOGISTIC).ipynb
 │ ├── Credit_risk(RFC).ipynb
-│ └── Credit_risk(XGBoost).ipynb
+│ ├── Credit_risk(XGBoost).ipynb
 │ └── Credit_risk(XGBoost)_Deployed.ipynb
-├── requirements.txt
-└── README.md
-
 
 ---
 
