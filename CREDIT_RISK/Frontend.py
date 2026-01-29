@@ -157,7 +157,7 @@ if submit:
 
     try:
         response = requests.post(
-            "http://127.0.0.1:8000/predict",
+            "https://credit-risk-api-qpbe.onrender.com/predict",
             json=payload
         )
 
